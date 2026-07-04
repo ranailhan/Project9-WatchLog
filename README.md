@@ -77,6 +77,20 @@ WatchLog, kullanıcıların izledikleri veya izlemek istedikleri film ve diziler
 * **WatchLog.API**: Dapper mikro-ORM aracılığıyla veritabanı işlemlerini yürüten ve performans odaklı saklı yordamlar (stored procedures) barındıran RESTful API katmanı.
 * **WatchLog.MVC**: Kullanıcı arayüzünü Bootstrap 5, ASP.NET Core Identity ve zengin modern temalar ile sunan istemci katmanı.
 
+### 🛠️ Kullanılan Teknolojiler (Tech Stack)
+* **Framework & Çalışma Zamanı**: .NET 8.0 & ASP.NET Core
+* **Web Arayüzü**: ASP.NET Core MVC (Razor Pages, Tag Helpers)
+* **REST API Katmanı**: ASP.NET Core Web API
+* **Veritabanı Erişimi (Data Access)**:
+  * **Dapper Micro-ORM**: API katmanında yüksek performanslı veri okuma/yazma ve Stored Procedure yönetimi için kullanılmıştır.
+  * **Entity Framework Core**: MVC katmanında Identity üyelik tablolarının yönetimi ve temel veri eşitlemeleri için tercih edilmiştir.
+* **Kimlik Doğrulama & Yetkilendirme**: ASP.NET Core Identity (Role-based: Admin & User rolleri)
+* **Kütüphaneler & Araçlar**:
+  * **QRCoder**: Sunucu taraflı, cross-platform dinamik QR kod resimleri üretmek için kullanılmıştır.
+  * **Newtonsoft.Json**: API ve MVC projeleri arasındaki JSON veri serileştirme işlemleri için kullanılmıştır.
+  * **EPPlus & QuestPDF**: Gelişmiş excel ve PDF rapor çıktıları üretimi için kullanılmıştır.
+* **Tasarım & Stil**: Bootstrap 5 (Özelleştirilmiş HSL Renk Paleti, Glassmorphism ve premium koyu tema detayları)
+
 ## Temel Özellikler
 * **Rol Tabanlı Yetkilendirme**: Üye ve Yönetici rolleri ile korunan yönetim panelleri.
 * **QR Kod ile Paylaşım**: Sunucu tarafında `QRCoder` paketini kullanarak oluşturulan dinamik QR kodları sayesinde listeleri hızlıca paylaşabilme.
@@ -117,6 +131,20 @@ WatchLog is a comprehensive tracking log where users can list, favorite, and rat
 ### Architectural Structure
 * **WatchLog.API**: A RESTful API layer that handles database operations using Dapper micro-ORM and optimized stored procedures.
 * **WatchLog.MVC**: An interactive client layer rendering the user interface with Bootstrap 5, ASP.NET Core Identity, and a premium dark theme.
+
+### 🛠️ Technologies Used (Tech Stack)
+* **Framework & Runtime**: .NET 8.0 & ASP.NET Core
+* **Web Interface**: ASP.NET Core MVC (Razor Pages, Tag Helpers)
+* **REST API Layer**: ASP.NET Core Web API
+* **Data Access**:
+  * **Dapper Micro-ORM**: Utilized in the API layer for high-performance data operations and Stored Procedure execution.
+  * **Entity Framework Core**: Used in the MVC layer for managing Identity authentication tables and basic relational mappings.
+* **Authentication & Authorization**: ASP.NET Core Identity (Role-based: Admin & User roles)
+* **Libraries & Tools**:
+  * **QRCoder**: High-efficiency, cross-platform server-side QR Code generation.
+  * **Newtonsoft.Json**: Custom JSON serialization/deserialization for controller-to-API communication.
+  * **EPPlus & QuestPDF**: Advanced Excel and PDF report document rendering engines.
+* **Design & Styling**: Bootstrap 5 (Tailored HSL color palette, Glassmorphism elements, and premium dark theme layout)
 
 ## Core Features
 * **Role-Based Authorization**: Protected management panels for Member and Administrator roles.
