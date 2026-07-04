@@ -99,11 +99,7 @@ WatchLog, kullanıcıların izledikleri veya izlemek istedikleri film ve diziler
 
 ## Kurulum Adımları
 
-1. **Veritabanını Oluşturun ve Seed Edin:**
-   * SQL Server Management Studio (SSMS) uygulamasını açın.
-   * `WatchLog.API` klasöründeki **[WatchLog_Seeding_Without_Drop.sql](WatchLog.API/WatchLog_Seeding_Without_Drop.sql)** dosyasını açıp çalıştırın. Bu işlem tabloları, ilişkileri ve saklı yordamları otomatik olarak oluşturup Supernatural vb. içerikleri yükleyecektir.
-
-2. **Bağlantı Dizelerini (Connection Strings) Ayarlayın:**
+1. **Bağlantı Dizelerini (Connection Strings) Ayarlayın:**
    * Hem **`WatchLog.API/appsettings.json`** hem de **`WatchLog.MVC/appsettings.json`** dosyalarındaki `"Server=YOUR_SQL_SERVER;"` alanını kendi yerel SQL Server adresinizle (örneğin `.`, `localhost` veya `(localdb)\MSSQLLocalDB`) güncelleyin.
 
 3. **Projeleri Çalıştırın:**
@@ -154,11 +150,7 @@ WatchLog is a comprehensive tracking log where users can list, favorite, and rat
 
 ## Setup Instructions
 
-1. **Create & Seed Database:**
-   * Open SQL Server Management Studio (SSMS).
-   * Open and execute the **[WatchLog_Seeding_Without_Drop.sql](WatchLog.API/WatchLog_Seeding_Without_Drop.sql)** script. This will automatically create tables, procedures, and seed Supernatural, Bates Motel, and other titles.
-
-2. **Set Connection Strings:**
+1. **Set Connection Strings:**
    * Replace the `"Server=YOUR_SQL_SERVER;"` portion in both **`WatchLog.API/appsettings.json`** and **`WatchLog.MVC/appsettings.json`** connection strings with your local SQL Server instance name (e.g., `.`, `localhost`, or `(localdb)\MSSQLLocalDB`).
 
 3. **Run the Applications:**
