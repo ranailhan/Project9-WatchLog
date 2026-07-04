@@ -1,0 +1,107 @@
+@using WatchLog.MVC.Models.ApiModels
+@model List<MovieModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Film Raporu";
+    var genres = (ViewBag.Genres as List<GenreModel>) ?? new();
+    var selectedGenre = ViewBag.SelectedGenre as int?;
+}
+
+<div class="wl-page-header">
+    <div class="container">
+        <h1 class="wl-page-title"><i class="fas fa-film text-primary me-2"></i>Film Raporu</h1>
+        <p class="wl-page-subtitle">Türe göre filtrelenmiş film listesi ve istatistikleri</p>
+    </div>
+</div>
+
+<div class="container py-4">
+    <!-- Filtreleme Alanı -->
+    <div class="mb-4" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;">
+        <form asp-controller="Reports" asp-action="Movies" method="get" class="row g-3 align-items-end">
+            <div class="col-md-6 col-lg-4">
+                <label class="wl-form-label">Türe Göre Filtrele</label>
+                <select name="genreId" class="wl-form-control wl-form-select">
+                    <option value="">Tümü</option>
+                    @foreach (var g in genres)
+                    {
+                        <option value="@g.Id" selected="@(selectedGenre == g.Id ? "selected" : null)">@g.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <button type="submit" class="wl-btn-primary w-100" style="justify-content:center;">
+                    <i class="fas fa-filter me-2"></i>Filtrele
+                </button>
+            </div>
+            <div class="col-lg-5 text-end d-flex gap-2 justify-content-end">
+                <a asp-controller="Reports" asp-action="ExportMoviesExcel" class="wl-btn-outline" style="border-color:#22c55e;color:#22c55e;">
+                    <i class="fas fa-file-excel me-2"></i>Excel
+                </a>
+                <a asp-controller="Reports" asp-action="ExportMoviesPdf" class="wl-btn-outline" style="border-color:var(--primary);color:var(--primary);">
+                    <i class="fas fa-file-pdf me-2"></i>PDF
+                </a>
+            </div>
+        </form>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="wl-empty">
+            <i class="fas fa-film"></i>
+            <h3>Bu türde film bulunamadı</h3>
+            <p>Farklı bir tür seçerek filtrelemeyi deneyin.</p>
+        </div>
+    }
+    else
+    {
+        <div class="admin-table-card">
+            <div class="admin-table-header">
+                <h3 class="admin-table-title"><i class="fas fa-list me-2 text-primary"></i>Rapor Listesi (@Model.Count film)</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Poster</th>
+                            <th>Başlık</th>
+                            <th>Yapım Yılı</th>
+                            <th>Süre</th>
+                            <th>Yönetmen</th>
+                            <th>Türler</th>
+                            <th>Oyuncular</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var m in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(m.PosterUrl))
+                                    {
+                                        <img src="@m.PosterUrl" alt="@m.Title" class="poster-thumb" style="width:36px;height:50px;object-fit:cover;border-radius:4px;" />
+                                    }
+                                    else
+                                    {
+                                        <div style="width:36px;height:50px;background:var(--surface2);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--border);">
+                                            <i class="fas fa-film" style="font-size:.8rem;"></i>
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-controller="Movies" asp-action="Detail" asp-route-id="@m.Id" style="color:var(--cream);font-weight:600;text-decoration:none;">
+                                        @m.Title
+                                    </a>
+                                </td>
+                                <td>@(m.ReleaseYear?.ToString() ?? "-")</td>
+                                <td>@(m.Duration.HasValue ? $"{m.Duration} dk" : "-")</td>
+                                <td>@(m.Director ?? "-")</td>
+                                <td><span style="font-size:.8rem;color:var(--text-muted);">@(m.GenreNames ?? "-")</span></td>
+                                <td><span style="font-size:.8rem;color:var(--text-muted);">@(m.ActorNames ?? "-")</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

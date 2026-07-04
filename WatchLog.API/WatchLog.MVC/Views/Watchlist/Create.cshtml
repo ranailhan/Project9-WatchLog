@@ -1,0 +1,49 @@
+@using WatchLog.MVC.Models.ViewModels
+@model CreateWatchlistViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Yeni Liste Oluştur";
+}
+
+<div class="wl-auth-page">
+    <div class="wl-form-card" style="max-width:480px;width:100%;">
+        <h2 style="font-size:1.4rem;font-weight:700;color:var(--cream);margin-bottom:1.5rem;">
+            <i class="fas fa-plus-circle text-primary me-2"></i>Yeni İzleme Listesi
+        </h2>
+
+        <form asp-controller="Watchlist" asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="wl-form-group">
+                <label class="wl-form-label">Liste Adı *</label>
+                <input asp-for="Name" class="wl-form-control" placeholder="Örn: 2024'te İzleyeceklerim" />
+                <span asp-validation-for="Name" class="text-danger" style="font-size:.8rem;"></span>
+            </div>
+
+            <div class="wl-form-group">
+                <label class="wl-form-label">Açıklama</label>
+                <textarea asp-for="Description" class="wl-form-control" rows="3"
+                          placeholder="Bu liste hakkında kısa bir açıklama..."></textarea>
+            </div>
+
+            <div class="wl-form-group">
+                <label style="display:flex;align-items:center;gap:10px;cursor:pointer;color:var(--text);">
+                    <input asp-for="IsPublic" type="checkbox" style="accent-color:var(--primary);width:18px;height:18px;" />
+                    <div>
+                        <div style="font-weight:500;">Herkese Açık Yap</div>
+                        <div class="text-muted" style="font-size:.8rem;">Diğer kullanıcılar bu listeyi görebilir</div>
+                    </div>
+                </label>
+            </div>
+
+            <div class="d-flex gap-3 mt-2">
+                <button type="submit" class="wl-btn-primary flex-fill" style="justify-content:center;">
+                    <i class="fas fa-check me-2"></i>Oluştur
+                </button>
+                <a asp-controller="Watchlist" asp-action="Index" class="wl-btn-outline" style="padding:11px 20px;">
+                    İptal
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

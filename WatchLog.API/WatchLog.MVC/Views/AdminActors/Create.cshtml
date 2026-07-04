@@ -1,0 +1,43 @@
+@using WatchLog.MVC.Models.ApiModels
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Yeni Oyuncu Ekle";
+}
+
+<div class="admin-form-card">
+    <form asp-controller="AdminActors" asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="row g-3">
+            <div class="col-12">
+                <label class="wl-form-label">Ad Soyad *</label>
+                <input type="text" name="fullName" class="wl-form-control" required placeholder="Oyuncu adı soyadı" />
+            </div>
+            <div class="col-md-6">
+                <label class="wl-form-label">Doğum Tarihi</label>
+                <input type="date" name="birthDate" class="wl-form-control" />
+            </div>
+            <div class="col-md-6">
+                <label class="wl-form-label">Uyruk</label>
+                <input type="text" name="nationality" class="wl-form-control" placeholder="Türk, Amerikan, İngiliz..." />
+            </div>
+            <div class="col-12">
+                <label class="wl-form-label">Fotoğraf URL</label>
+                <input type="url" name="photoUrl" class="wl-form-control" placeholder="https://..." />
+            </div>
+            <div class="col-12">
+                <label class="wl-form-label">Biyografi</label>
+                <textarea name="biography" class="wl-form-control" rows="5" placeholder="Oyuncu hakkında biyografi..."></textarea>
+            </div>
+        </div>
+
+        <div class="d-flex gap-3 mt-4">
+            <button type="submit" class="wl-btn-primary">
+                <i class="fas fa-save me-2"></i>Kaydet
+            </button>
+            <a asp-controller="AdminActors" asp-action="Index" class="wl-btn-outline">
+                <i class="fas fa-times me-2"></i>İptal
+            </a>
+        </div>
+    </form>
+</div>

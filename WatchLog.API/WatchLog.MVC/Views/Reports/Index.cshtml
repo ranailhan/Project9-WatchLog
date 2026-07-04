@@ -1,0 +1,111 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Raporlar";
+    var genres = (ViewBag.Genres as List<WatchLog.MVC.Models.ApiModels.GenreModel>) ?? new();
+    var actors = (ViewBag.Actors as List<WatchLog.MVC.Models.ApiModels.ActorModel>) ?? new();
+}
+
+<div class="wl-page-header">
+    <div class="container">
+        <h1 class="wl-page-title"><i class="fas fa-chart-bar text-primary me-2"></i>Raporlar</h1>
+        <p class="wl-page-subtitle">Film ve dizi raporları oluştur, Excel veya PDF olarak indir</p>
+    </div>
+</div>
+
+<div class="container py-4">
+    <div class="row g-4">
+        <!-- Excel Export -->
+        <div class="col-md-6">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div style="width:56px;height:56px;background:rgba(34,197,94,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#22c55e;">
+                        <i class="fas fa-file-excel"></i>
+                    </div>
+                    <div>
+                        <h3 style="font-size:1.1rem;font-weight:700;color:var(--cream);margin:0;">Excel Raporları</h3>
+                        <p class="text-muted mb-0" style="font-size:.85rem;">Tüm veriler tablolu formatta</p>
+                    </div>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                    <a asp-controller="Reports" asp-action="ExportMoviesExcel"
+                       class="wl-btn-outline" style="justify-content:center;border-color:#22c55e;color:#22c55e;">
+                        <i class="fas fa-download me-2"></i>Film Raporu İndir
+                    </a>
+                    <a asp-controller="Reports" asp-action="ExportSeriesExcel"
+                       class="wl-btn-outline" style="justify-content:center;border-color:#22c55e;color:#22c55e;">
+                        <i class="fas fa-download me-2"></i>Dizi Raporu İndir
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- PDF Export -->
+        <div class="col-md-6">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div style="width:56px;height:56px;background:rgba(217,34,67,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--primary);">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div>
+                        <h3 style="font-size:1.1rem;font-weight:700;color:var(--cream);margin:0;">PDF Raporları</h3>
+                        <p class="text-muted mb-0" style="font-size:.85rem;">Profesyonel baskı formatı</p>
+                    </div>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                    <a asp-controller="Reports" asp-action="ExportMoviesPdf"
+                       class="wl-btn-outline" style="justify-content:center;border-color:var(--primary);color:var(--primary);">
+                        <i class="fas fa-download me-2"></i>Film Raporu İndir
+                    </a>
+                    <a asp-controller="Reports" asp-action="ExportSeriesPdf"
+                       class="wl-btn-outline" style="justify-content:center;border-color:var(--primary);color:var(--primary);">
+                        <i class="fas fa-download me-2"></i>Dizi Raporu İndir
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Türe Göre Filtreli Rapor -->
+        <div class="col-md-6">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;">
+                <h3 style="font-size:1.1rem;font-weight:700;color:var(--cream);margin-bottom:1.5rem;">
+                    <i class="fas fa-tags text-accent me-2"></i>Türe Göre Filmler
+                </h3>
+                <form asp-controller="Reports" asp-action="Movies" method="get">
+                    <div class="wl-form-group">
+                        <label class="wl-form-label">Tür Seç</label>
+                        <select name="genreId" class="wl-form-control wl-form-select">
+                            <option value="">Tümü</option>
+                            @foreach (var g in genres)
+                            {
+                                <option value="@g.Id">@g.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <button type="submit" class="wl-btn-primary">
+                        <i class="fas fa-search me-2"></i>Filtrele
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tür İstatistikleri -->
+        <div class="col-md-6">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;">
+                <h3 style="font-size:1.1rem;font-weight:700;color:var(--cream);margin-bottom:1.5rem;">
+                    <i class="fas fa-chart-pie text-primary me-2"></i>Hızlı Erişim
+                </h3>
+                <div class="d-flex flex-column gap-2">
+                    <a asp-controller="Reports" asp-action="GenreStats" class="wl-btn-outline" style="justify-content:center;">
+                        <i class="fas fa-tags me-2"></i>Tür İstatistikleri
+                    </a>
+                    <a asp-controller="Reports" asp-action="UserActivity" class="wl-btn-outline" style="justify-content:center;">
+                        <i class="fas fa-users me-2"></i>Kullanıcı Aktivitesi
+                    </a>
+                    <a asp-controller="Reports" asp-action="Series" class="wl-btn-outline" style="justify-content:center;">
+                        <i class="fas fa-tv me-2"></i>Dizi Raporu Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

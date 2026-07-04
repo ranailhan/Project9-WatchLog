@@ -1,0 +1,75 @@
+@using WatchLog.MVC.Models.ApiModels
+@model List<SeriesModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Diziler";
+    var genres = (ViewBag.Genres as List<GenreModel>) ?? new();
+    var selectedGenre = ViewBag.SelectedGenre as int?;
+}
+
+<div class="wl-page-header">
+    <div class="container">
+        <h1 class="wl-page-title"><i class="fas fa-tv text-accent me-2"></i>Diziler</h1>
+        <p class="wl-page-subtitle">@Model.Count dizi listelendi</p>
+    </div>
+</div>
+
+<div class="container py-4">
+    @if (genres.Any())
+    {
+        <div class="wl-filter-bar mb-4">
+            <a asp-controller="Series" asp-action="Index"
+               class="wl-filter-pill @(selectedGenre == null ? "active" : "")">Tümü</a>
+            @foreach (var g in genres)
+            {
+                <a asp-controller="Series" asp-action="Index" asp-route-genreId="@g.Id"
+                   class="wl-filter-pill @(selectedGenre == g.Id ? "active" : "")">@g.Name</a>
+            }
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="wl-empty">
+            <i class="fas fa-tv"></i>
+            <h3>Dizi bulunamadı</h3>
+            <p>Farklı bir tür deneyin.</p>
+        </div>
+    }
+    else
+    {
+        <div class="wl-grid">
+            @foreach (var s in Model)
+            {
+                <a class="wl-card" asp-controller="Series" asp-action="Detail" asp-route-id="@s.Id">
+                    <div class="wl-card-poster">
+                        @if (!string.IsNullOrEmpty(s.PosterUrl))
+                        {
+                            <img src="@s.PosterUrl" alt="@s.Title" loading="lazy" />
+                        }
+                        else
+                        {
+                            <div class="wl-card-placeholder"><i class="fas fa-tv"></i></div>
+                        }
+                        <span class="wl-card-type" style="background:#E0C375;color:#000;">Dizi</span>
+                        <div class="wl-card-overlay">
+                            <div class="wl-card-overlay-actions">
+                                <span class="wl-card-icon-btn"><i class="fas fa-info"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wl-card-info">
+                        <div class="wl-card-title">@s.Title</div>
+                        <div class="wl-card-meta">
+                            @s.StartYear@(s.EndYear.HasValue ? $" – {s.EndYear}" : " – ")
+                            @if (s.SeasonCount.HasValue)
+                            {
+                                <span>· @s.SeasonCount Sezon</span>
+                            }
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+</div>

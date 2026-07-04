@@ -1,0 +1,211 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Ana Sayfa";
+    var movies = (ViewBag.Movies as List<WatchLog.MVC.Models.ApiModels.MovieModel>) ?? new();
+    var series = (ViewBag.Series as List<WatchLog.MVC.Models.ApiModels.SeriesModel>) ?? new();
+    var genres = (ViewBag.Genres as List<WatchLog.MVC.Models.ApiModels.GenreModel>) ?? new();
+    var featured = ViewBag.Featured;
+    var isSeries = ViewBag.FeaturedType == "Series";
+}
+
+<!-- Hero Banner -->
+@if (featured != null)
+{
+    var title = isSeries ? ((WatchLog.MVC.Models.ApiModels.SeriesModel)featured).Title : ((WatchLog.MVC.Models.ApiModels.MovieModel)featured).Title;
+    var posterUrl = isSeries ? ((WatchLog.MVC.Models.ApiModels.SeriesModel)featured).PosterUrl : ((WatchLog.MVC.Models.ApiModels.MovieModel)featured).PosterUrl;
+    var description = isSeries ? ((WatchLog.MVC.Models.ApiModels.SeriesModel)featured).Description : ((WatchLog.MVC.Models.ApiModels.MovieModel)featured).Description;
+    var director = isSeries ? ((WatchLog.MVC.Models.ApiModels.SeriesModel)featured).Director : ((WatchLog.MVC.Models.ApiModels.MovieModel)featured).Director;
+    var id = isSeries ? ((WatchLog.MVC.Models.ApiModels.SeriesModel)featured).Id : ((WatchLog.MVC.Models.ApiModels.MovieModel)featured).Id;
+
+    <section class="wl-hero">
+        <div class="wl-hero-backdrop"
+             style="background-image: url('@posterUrl')"></div>
+        <div class="wl-hero-overlay"></div>
+        <div class="wl-hero-content">
+            <div class="wl-hero-badge">
+                <i class="fas fa-fire"></i> Öne Çıkan @(isSeries ? "Dizi" : "Film")
+            </div>
+            <h1 class="wl-hero-title">@title</h1>
+            <div class="wl-hero-meta">
+                @if (isSeries)
+                {
+                    var s = (WatchLog.MVC.Models.ApiModels.SeriesModel)featured;
+                    if (s.StartYear.HasValue)
+                    {
+                        <span>@s.StartYear @(s.EndYear.HasValue ? $"- {s.EndYear}" : "")</span>
+                        <span class="sep">|</span>
+                    }
+                    if (s.SeasonCount.HasValue)
+                    {
+                        <span>@s.SeasonCount Sezon</span>
+                        <span class="sep">|</span>
+                    }
+                }
+                else
+                {
+                    var m = (WatchLog.MVC.Models.ApiModels.MovieModel)featured;
+                    if (m.ReleaseYear.HasValue)
+                    {
+                        <span>@m.ReleaseYear</span>
+                        <span class="sep">|</span>
+                    }
+                    if (m.Duration.HasValue)
+                    {
+                        <span>@m.Duration dk</span>
+                        <span class="sep">|</span>
+                    }
+                }
+                @if (!string.IsNullOrEmpty(director))
+                {
+                    <span>@director</span>
+                }
+            </div>
+            @if (!string.IsNullOrEmpty(description))
+            {
+                <p class="wl-hero-desc">@description</p>
+            }
+            <div class="wl-hero-actions">
+                <a asp-controller="@(isSeries ? "Series" : "Movies")" asp-action="Detail" asp-route-id="@id"
+                   class="wl-btn-hero wl-btn-hero-play">
+                    <i class="fas fa-play"></i> Detayları Gör
+                </a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="@(isSeries ? "AdminSeries" : "AdminMovies")" asp-action="Edit" asp-route-id="@id"
+                       class="wl-btn-hero wl-btn-hero-info">
+                        <i class="fas fa-edit"></i> Düzenle
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+}
+else
+{
+    <div class="wl-hero" style="background: linear-gradient(135deg,#0a0a0a 0%,#1a0a10 100%); min-height:50vh; align-items:center; justify-content:center;">
+        <div style="text-align:center;padding:2rem;">
+            <div class="wl-logo" style="font-size:3rem;margin-bottom:1rem;">WATCH<span>LOG</span></div>
+            <p class="text-muted">Film ve dizileri keşfet, listeler oluştur.</p>
+            <a asp-controller="Account" asp-action="Register" class="wl-btn-primary mt-3">
+                Hemen Başla
+            </a>
+        </div>
+    </div>
+}
+
+<!-- Filmler Şeridi -->
+@if (movies.Any())
+{
+    <section class="wl-section">
+        <h2 class="wl-section-title">
+            <i class="fas fa-film text-primary"></i>
+            Filmler
+            <a asp-controller="Movies" asp-action="Index">Tümünü Gör →</a>
+        </h2>
+        <div class="wl-strip">
+            @foreach (var movie in movies)
+            {
+                <a class="wl-card" asp-controller="Movies" asp-action="Detail" asp-route-id="@movie.Id">
+                    <div class="wl-card-poster">
+                        @if (!string.IsNullOrEmpty(movie.PosterUrl))
+                        {
+                            <img src="@movie.PosterUrl" alt="@movie.Title" loading="lazy" />
+                        }
+                        else
+                        {
+                            <div class="wl-card-placeholder"><i class="fas fa-film"></i></div>
+                        }
+                        <span class="wl-card-type">Film</span>
+                        <div class="wl-card-overlay">
+                            <div class="wl-card-overlay-actions">
+                                <span class="wl-card-icon-btn" title="Detay">
+                                    <i class="fas fa-info"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wl-card-info">
+                        <div class="wl-card-title">@movie.Title</div>
+                        <div class="wl-card-meta">@movie.ReleaseYear</div>
+                    </div>
+                </a>
+            }
+        </div>
+    </section>
+}
+
+<!-- Tür Keşfi -->
+@if (genres.Any())
+{
+    <section class="wl-section" style="padding: 1rem 3rem;">
+        <h2 class="wl-section-title" style="padding:0;margin-bottom:.75rem;">
+            <i class="fas fa-tags text-accent"></i> Türe Göre Keşfet
+        </h2>
+        <div class="wl-filter-bar">
+            @foreach (var g in genres)
+            {
+                <a asp-controller="Movies" asp-action="Index" asp-route-genreId="@g.Id"
+                   class="wl-filter-pill">@g.Name</a>
+            }
+        </div>
+    </section>
+}
+
+<!-- Diziler Şeridi -->
+@if (series.Any())
+{
+    <section class="wl-section">
+        <h2 class="wl-section-title">
+            <i class="fas fa-tv text-accent"></i>
+            Diziler
+            <a asp-controller="Series" asp-action="Index">Tümünü Gör →</a>
+        </h2>
+        <div class="wl-strip">
+            @foreach (var s in series)
+            {
+                <a class="wl-card" asp-controller="Series" asp-action="Detail" asp-route-id="@s.Id">
+                    <div class="wl-card-poster">
+                        @if (!string.IsNullOrEmpty(s.PosterUrl))
+                        {
+                            <img src="@s.PosterUrl" alt="@s.Title" loading="lazy" />
+                        }
+                        else
+                        {
+                            <div class="wl-card-placeholder"><i class="fas fa-tv"></i></div>
+                        }
+                        <span class="wl-card-type" style="background:#E0C375;color:#000;">Dizi</span>
+                    </div>
+                    <div class="wl-card-info">
+                        <div class="wl-card-title">@s.Title</div>
+                        <div class="wl-card-meta">
+                            @s.StartYear@(s.EndYear.HasValue ? $" – {s.EndYear}" : " – ")
+                            @if (s.SeasonCount.HasValue)
+                            {
+                                <span>· @s.SeasonCount Sezon</span>
+                            }
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    </section>
+}
+
+<!-- CTA (Giriş yapmamışsa) -->
+@if (!User.Identity?.IsAuthenticated == true)
+{
+    <section style="padding: 4rem 3rem; text-align:center; background: linear-gradient(135deg, rgba(217,34,67,.06), transparent);">
+        <h2 style="font-size:2rem;font-weight:800;color:var(--cream);margin-bottom:1rem;">
+            Keşfetmeye Başla
+        </h2>
+        <p class="text-muted mb-4">İzleme listeleri oluştur, puan ver, yorum yap ve favorilerini kaydet.</p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a asp-controller="Account" asp-action="Register" class="wl-btn-primary" style="padding:12px 32px;font-size:1rem;">
+                Ücretsiz Kayıt Ol
+            </a>
+            <a asp-controller="Account" asp-action="Login" class="wl-btn-outline" style="padding:12px 32px;font-size:1rem;">
+                Giriş Yap
+            </a>
+        </div>
+    </section>
+}

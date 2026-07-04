@@ -1,0 +1,44 @@
+@using WatchLog.MVC.Models.ApiModels
+@model ActorModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Oyuncu Düzenle: " + Model.FullName;
+}
+
+<div class="admin-form-card">
+    <form asp-controller="AdminActors" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="row g-3">
+            <div class="col-12">
+                <label class="wl-form-label">Ad Soyad *</label>
+                <input type="text" name="fullName" class="wl-form-control" required value="@Model.FullName" />
+            </div>
+            <div class="col-md-6">
+                <label class="wl-form-label">Doğum Tarihi</label>
+                <input type="date" name="birthDate" class="wl-form-control" value="@(Model.BirthDate?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-md-6">
+                <label class="wl-form-label">Uyruk</label>
+                <input type="text" name="nationality" class="wl-form-control" value="@Model.Nationality" />
+            </div>
+            <div class="col-12">
+                <label class="wl-form-label">Fotoğraf URL</label>
+                <input type="url" name="photoUrl" class="wl-form-control" value="@Model.PhotoUrl" />
+            </div>
+            <div class="col-12">
+                <label class="wl-form-label">Biyografi</label>
+                <textarea name="biography" class="wl-form-control" rows="5">@Model.Biography</textarea>
+            </div>
+        </div>
+
+        <div class="d-flex gap-3 mt-4">
+            <button type="submit" class="wl-btn-primary">
+                <i class="fas fa-save me-2"></i>Güncelle
+            </button>
+            <a asp-controller="AdminActors" asp-action="Index" class="wl-btn-outline">
+                <i class="fas fa-times me-2"></i>İptal
+            </a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,93 @@
+@using WatchLog.MVC.Models.ApiModels
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Yeni Film Ekle";
+    var genres = (ViewBag.Genres as List<GenreModel>) ?? new();
+    var actors = (ViewBag.Actors as List<ActorModel>) ?? new();
+}
+
+<div class="admin-form-card">
+    <form asp-controller="AdminMovies" asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="row g-3">
+            <div class="col-12">
+                <label class="wl-form-label">Başlık *</label>
+                <input type="text" name="title" class="wl-form-control" required placeholder="Film adı" />
+            </div>
+            <div class="col-12">
+                <label class="wl-form-label">Açıklama</label>
+                <textarea name="description" class="wl-form-control" rows="4" placeholder="Film hakkında kısa açıklama..."></textarea>
+            </div>
+            <div class="col-md-3">
+                <label class="wl-form-label">Yapım Yılı</label>
+                <input type="number" name="releaseYear" class="wl-form-control" min="1900" max="2030" placeholder="2024" />
+            </div>
+            <div class="col-md-3">
+                <label class="wl-form-label">Süre (dakika)</label>
+                <input type="number" name="duration" class="wl-form-control" min="1" placeholder="120" />
+            </div>
+            <div class="col-md-6">
+                <label class="wl-form-label">Yönetmen</label>
+                <input type="text" name="director" class="wl-form-control" placeholder="Yönetmen adı" />
+            </div>
+            <div class="col-md-6">
+                <label class="wl-form-label">Ülke</label>
+                <input type="text" name="country" class="wl-form-control" placeholder="ABD, Türkiye..." />
+            </div>
+            <div class="col-md-6">
+                <label class="wl-form-label">Dil</label>
+                <input type="text" name="language" class="wl-form-control" placeholder="Türkçe, İngilizce..." />
+            </div>
+            <div class="col-12">
+                <label class="wl-form-label">Poster URL</label>
+                <input type="url" name="posterUrl" class="wl-form-control" placeholder="https://..." id="posterUrlInput" />
+            </div>
+            <div class="col-12">
+                <label class="wl-form-label">Fragman URL (YouTube)</label>
+                <input type="url" name="trailerUrl" class="wl-form-control" placeholder="https://youtube.com/..." />
+            </div>
+
+            @if (genres.Any())
+            {
+                <div class="col-md-6">
+                    <label class="wl-form-label">Türler</label>
+                    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;max-height:200px;overflow-y:auto;">
+                        @foreach (var g in genres)
+                        {
+                            <label style="display:flex;align-items:center;gap:8px;padding:4px 0;cursor:pointer;">
+                                <input type="checkbox" name="genreIds" value="@g.Id" style="accent-color:var(--primary);" />
+                                <span style="color:var(--text);font-size:.9rem;">@g.Name</span>
+                            </label>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (actors.Any())
+            {
+                <div class="col-md-6">
+                    <label class="wl-form-label">Oyuncular</label>
+                    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;max-height:200px;overflow-y:auto;">
+                        @foreach (var a in actors)
+                        {
+                            <label style="display:flex;align-items:center;gap:8px;padding:4px 0;cursor:pointer;">
+                                <input type="checkbox" name="actorIds" value="@a.Id" style="accent-color:var(--primary);" />
+                                <span style="color:var(--text);font-size:.9rem;">@a.FullName</span>
+                            </label>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="d-flex gap-3 mt-4">
+            <button type="submit" class="wl-btn-primary">
+                <i class="fas fa-save me-2"></i>Kaydet
+            </button>
+            <a asp-controller="AdminMovies" asp-action="Index" class="wl-btn-outline">
+                <i class="fas fa-times me-2"></i>İptal
+            </a>
+        </div>
+    </form>
+</div>

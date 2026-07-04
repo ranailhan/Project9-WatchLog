@@ -1,0 +1,47 @@
+@using WatchLog.MVC.Models.ApiModels
+@model List<GenreStatsModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Tür İstatistikleri";
+}
+
+<div class="wl-page-header">
+    <div class="container">
+        <h1 class="wl-page-title"><i class="fas fa-chart-pie text-primary me-2"></i>Tür İstatistikleri</h1>
+        <p class="wl-page-subtitle">Platformda bulunan türler ve bu türlerdeki film/dizi sayıları</p>
+    </div>
+</div>
+
+<div class="container py-4">
+    <div class="admin-table-card" style="max-width: 800px; margin: 0 auto;">
+        <div class="admin-table-header">
+            <h3 class="admin-table-title"><i class="fas fa-tags me-2 text-primary"></i>Tür Dağılımı</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Tür Adı</th>
+                        <th>Film Sayısı</th>
+                        <th>Dizi Sayısı</th>
+                        <th>Toplam İçerik</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var g in Model)
+                    {
+                        var total = g.MovieCount + g.SeriesCount;
+                        <tr>
+                            <td><strong style="color:var(--cream)">@g.Name</strong></td>
+                            <td>@g.MovieCount</td>
+                            <td>@g.SeriesCount</td>
+                            <td>
+                                <span class="badge bg-primary" style="font-size:.85rem; padding: 4px 10px;">@total</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

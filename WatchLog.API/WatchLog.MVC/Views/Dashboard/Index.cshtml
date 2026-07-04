@@ -1,0 +1,123 @@
+@using WatchLog.MVC.Models.ViewModels
+@model AdminDashboardViewModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Dashboard";
+}
+
+<!-- Stat Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon icon-red"><i class="fas fa-film"></i></div>
+            <div>
+                <div class="admin-stat-number">@Model.MovieCount</div>
+                <div class="admin-stat-label">Toplam Film</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon icon-gold"><i class="fas fa-tv"></i></div>
+            <div>
+                <div class="admin-stat-number">@Model.SeriesCount</div>
+                <div class="admin-stat-label">Toplam Dizi</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon icon-blue"><i class="fas fa-user-friends"></i></div>
+            <div>
+                <div class="admin-stat-number">@Model.ActorCount</div>
+                <div class="admin-stat-label">Oyuncu</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon icon-green"><i class="fas fa-tags"></i></div>
+            <div>
+                <div class="admin-stat-number">@Model.GenreCount</div>
+                <div class="admin-stat-label">Tür</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon icon-purple"><i class="fas fa-users"></i></div>
+            <div>
+                <div class="admin-stat-number">@Model.UserCount</div>
+                <div class="admin-stat-label">Kullanıcı</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon icon-orange"><i class="fas fa-comments"></i></div>
+            <div>
+                <div class="admin-stat-number">@Model.ReviewCount</div>
+                <div class="admin-stat-label">Yorum</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon icon-pink"><i class="fas fa-heart"></i></div>
+            <div>
+                <div class="admin-stat-number">@Model.FavoriteCount</div>
+                <div class="admin-stat-label">Favori</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hızlı Aksiyonlar -->
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="admin-table-card">
+            <div class="admin-table-header">
+                <h2 class="admin-table-title">Hızlı İşlemler</h2>
+            </div>
+            <div class="p-3">
+                <div class="d-flex flex-column gap-2">
+                    <a asp-controller="AdminMovies" asp-action="Create" class="wl-btn-primary w-100" style="justify-content:center;">
+                        <i class="fas fa-plus me-2"></i>Yeni Film Ekle
+                    </a>
+                    <a asp-controller="AdminSeries" asp-action="Create" class="wl-btn-outline w-100" style="justify-content:center;">
+                        <i class="fas fa-plus me-2"></i>Yeni Dizi Ekle
+                    </a>
+                    <a asp-controller="AdminActors" asp-action="Create" class="wl-btn-outline w-100" style="justify-content:center;">
+                        <i class="fas fa-plus me-2"></i>Yeni Oyuncu Ekle
+                    </a>
+                    <a asp-controller="AdminGenres" asp-action="Create" class="wl-btn-outline w-100" style="justify-content:center;">
+                        <i class="fas fa-plus me-2"></i>Yeni Tür Ekle
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="admin-table-card">
+            <div class="admin-table-header">
+                <h2 class="admin-table-title">Raporlar & Export</h2>
+            </div>
+            <div class="p-3">
+                <div class="d-flex flex-column gap-2">
+                    <a asp-controller="Reports" asp-action="ExportMoviesExcel" class="wl-btn-outline w-100" style="justify-content:center;border-color:#22c55e;color:#22c55e;">
+                        <i class="fas fa-file-excel me-2"></i>Film Raporu (Excel)
+                    </a>
+                    <a asp-controller="Reports" asp-action="ExportSeriesExcel" class="wl-btn-outline w-100" style="justify-content:center;border-color:#22c55e;color:#22c55e;">
+                        <i class="fas fa-file-excel me-2"></i>Dizi Raporu (Excel)
+                    </a>
+                    <a asp-controller="Reports" asp-action="ExportMoviesPdf" class="wl-btn-outline w-100" style="justify-content:center;border-color:var(--primary);color:var(--primary);">
+                        <i class="fas fa-file-pdf me-2"></i>Film Raporu (PDF)
+                    </a>
+                    <a asp-controller="Reports" asp-action="ExportSeriesPdf" class="wl-btn-outline w-100" style="justify-content:center;border-color:var(--primary);color:var(--primary);">
+                        <i class="fas fa-file-pdf me-2"></i>Dizi Raporu (PDF)
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

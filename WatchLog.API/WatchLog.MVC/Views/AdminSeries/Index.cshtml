@@ -1,0 +1,81 @@
+@using WatchLog.MVC.Models.ApiModels
+@model List<SeriesModel>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Diziler";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div></div>
+    <a asp-controller="AdminSeries" asp-action="Create" class="wl-btn-primary">
+        <i class="fas fa-plus me-1"></i>Yeni Dizi
+    </a>
+</div>
+
+<div class="admin-table-card">
+    <div class="admin-table-header">
+        <h2 class="admin-table-title"><i class="fas fa-tv me-2 text-primary"></i>Dizi Listesi</h2>
+        <span class="text-muted ms-auto" style="font-size:.85rem;">@Model.Count dizi</span>
+    </div>
+    <div class="table-responsive">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Poster</th>
+                    <th>Başlık</th>
+                    <th>Yıllar</th>
+                    <th>Sezon/Bölüm</th>
+                    <th>Yönetmen</th>
+                    <th>Türler</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var s in Model)
+                {
+                    <tr>
+                        <td>
+                            @if (!string.IsNullOrEmpty(s.PosterUrl))
+                            {
+                                <img src="@s.PosterUrl" alt="@s.Title" class="poster-thumb" />
+                            }
+                            else
+                            {
+                                <div style="width:36px;height:50px;background:var(--surface2);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--border);">
+                                    <i class="fas fa-tv" style="font-size:.8rem;"></i>
+                                </div>
+                            }
+                        </td>
+                        <td><strong style="color:var(--cream)">@s.Title</strong></td>
+                        <td>
+                            @(s.StartYear?.ToString() ?? "-") - @(s.EndYear?.ToString() ?? "Devam Ediyor")
+                        </td>
+                        <td>
+                            @(s.SeasonCount.HasValue ? $"{s.SeasonCount} Sezon" : "-") / @(s.EpisodeCount.HasValue ? $"{s.EpisodeCount} Bölüm" : "-")
+                        </td>
+                        <td>@(s.Director ?? "-")</td>
+                        <td>
+                            <span style="font-size:.8rem;color:var(--text-muted);">@(s.GenreNames ?? "-")</span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a asp-controller="AdminSeries" asp-action="Edit" asp-route-id="@s.Id"
+                                   class="btn-action btn-edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form asp-controller="AdminSeries" asp-action="Delete" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@s.Id" />
+                                    <button type="submit" class="btn-action btn-delete"
+                                            onclick="return confirm('@s.Title dizisini silmek istiyor musun?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

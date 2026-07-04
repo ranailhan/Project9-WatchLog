@@ -1,0 +1,59 @@
+@using WatchLog.MVC.Models.ViewModels
+@model RegisterViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Kayıt Ol";
+}
+
+<div class="wl-auth-page">
+    <div class="wl-form-card" style="max-width:480px;width:100%;">
+        <div class="text-center mb-4">
+            <div class="wl-logo" style="font-size:2rem;margin-bottom:8px;">WATCH<span>LOG</span></div>
+            <h2 style="font-size:1.4rem;font-weight:700;color:var(--cream);">Hesap Oluştur</h2>
+            <p class="text-muted" style="font-size:.9rem;">Film ve dizi dünyasına katıl</p>
+        </div>
+
+        <form asp-controller="Account" asp-action="Register" method="post">
+            @Html.AntiForgeryToken()
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div asp-validation-summary="All" class="alert text-danger" style="background:rgba(217,34,67,.1);border:1px solid rgba(217,34,67,.3);border-radius:8px;padding:10px 14px;font-size:.85rem;"></div>
+            }
+
+            <div class="wl-form-group">
+                <label class="wl-form-label">Görünen Ad</label>
+                <input asp-for="DisplayName" class="wl-form-control" placeholder="Adın" />
+                <span asp-validation-for="DisplayName" class="text-danger" style="font-size:.8rem;"></span>
+            </div>
+
+            <div class="wl-form-group">
+                <label class="wl-form-label">E-posta</label>
+                <input asp-for="Email" type="email" class="wl-form-control" placeholder="ornek@email.com" />
+                <span asp-validation-for="Email" class="text-danger" style="font-size:.8rem;"></span>
+            </div>
+
+            <div class="wl-form-group">
+                <label class="wl-form-label">Şifre</label>
+                <input asp-for="Password" type="password" class="wl-form-control" placeholder="En az 6 karakter" />
+                <span asp-validation-for="Password" class="text-danger" style="font-size:.8rem;"></span>
+            </div>
+
+            <div class="wl-form-group">
+                <label class="wl-form-label">Şifre Tekrar</label>
+                <input asp-for="ConfirmPassword" type="password" class="wl-form-control" placeholder="Şifreyi tekrar gir" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger" style="font-size:.8rem;"></span>
+            </div>
+
+            <button type="submit" class="wl-btn-primary w-100 mt-2" style="padding:12px;font-size:1rem;justify-content:center;">
+                <i class="fas fa-user-plus me-2"></i>Kayıt Ol
+            </button>
+        </form>
+
+        <p class="text-center text-muted mt-4" style="font-size:.9rem;">
+            Zaten hesabın var mı?
+            <a asp-controller="Account" asp-action="Login" style="color:var(--primary);font-weight:600;">
+                Giriş Yap
+            </a>
+        </p>
+    </div>
+</div>

@@ -1,0 +1,97 @@
+@using WatchLog.MVC.Models.ViewModels
+@model ProfileViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Profilim";
+}
+
+<div class="wl-page-header">
+    <div class="container">
+        <h1 class="wl-page-title">Profilim</h1>
+    </div>
+</div>
+
+<div class="container py-4">
+    <!-- Profil Header -->
+    <div class="wl-profile-header mb-4">
+        <div class="wl-profile-avatar">
+            @(Model.DisplayName?.FirstOrDefault() ?? Model.Email?.FirstOrDefault() ?? 'U')
+        </div>
+        <div>
+            <h2 style="font-size:1.6rem;font-weight:700;color:var(--cream);margin-bottom:4px;">
+                @(Model.DisplayName ?? "Kullanıcı")
+            </h2>
+            <p class="text-muted mb-0">@Model.Email</p>
+            @if (!string.IsNullOrEmpty(Model.Bio))
+            {
+                <p style="color:var(--text);margin-top:8px;font-size:.92rem;">@Model.Bio</p>
+            }
+        </div>
+    </div>
+
+    <!-- İstatistikler -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="wl-stat-box">
+                <div class="wl-stat-number">@Model.WatchlistCount</div>
+                <div class="wl-stat-label">İzleme Listesi</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="wl-stat-box">
+                <div class="wl-stat-number">@Model.FavoriteCount</div>
+                <div class="wl-stat-label">Favori</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="wl-stat-box">
+                <div class="wl-stat-number">@Model.ReviewCount</div>
+                <div class="wl-stat-label">Yorum</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="wl-stat-box">
+                <div class="wl-stat-number">@Model.RatingCount</div>
+                <div class="wl-stat-label">Puan Verilen</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hızlı Erişim -->
+    <div class="row g-3">
+        <div class="col-md-4">
+            <a class="wl-list-card" asp-controller="Watchlist" asp-action="Index">
+                <div class="wl-list-icon"><i class="fas fa-list"></i></div>
+                <div>
+                    <div style="font-weight:600;color:var(--cream);">İzleme Listelerim</div>
+                    <div class="text-muted" style="font-size:.85rem;">@Model.WatchlistCount liste</div>
+                </div>
+                <i class="fas fa-chevron-right text-muted ms-auto"></i>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a class="wl-list-card" asp-controller="Favorites" asp-action="Index">
+                <div class="wl-list-icon" style="background:linear-gradient(135deg,#a01a35,#d92243);">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div>
+                    <div style="font-weight:600;color:var(--cream);">Favorilerim</div>
+                    <div class="text-muted" style="font-size:.85rem;">@Model.FavoriteCount içerik</div>
+                </div>
+                <i class="fas fa-chevron-right text-muted ms-auto"></i>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a class="wl-list-card" asp-controller="Reports" asp-action="Index">
+                <div class="wl-list-icon" style="background:linear-gradient(135deg,#7a6020,#c09a40);">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div>
+                    <div style="font-weight:600;color:var(--cream);">Raporlar</div>
+                    <div class="text-muted" style="font-size:.85rem;">Excel & PDF indir</div>
+                </div>
+                <i class="fas fa-chevron-right text-muted ms-auto"></i>
+            </a>
+        </div>
+    </div>
+</div>

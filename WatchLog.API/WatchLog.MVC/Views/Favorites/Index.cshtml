@@ -1,0 +1,76 @@
+@using WatchLog.MVC.Models.ViewModels
+@model List<FavoriteViewModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Favorilerim";
+}
+
+<div class="wl-page-header">
+    <div class="container">
+        <h1 class="wl-page-title"><i class="fas fa-heart text-primary me-2"></i>Favorilerim</h1>
+        <p class="wl-page-subtitle">@Model.Count içerik favorilerinde</p>
+    </div>
+</div>
+
+<div class="container py-4">
+    @if (!Model.Any())
+    {
+        <div class="wl-empty">
+            <i class="fas fa-heart"></i>
+            <h3>Favori içeriğin bulunmuyor</h3>
+            <p>Beğendiğin film ve dizileri favorilerine ekle.</p>
+            <div class="d-flex gap-2 justify-content-center mt-3">
+                <a asp-controller="Movies" asp-action="Index" class="wl-btn-primary">Filmleri Keşfet</a>
+                <a asp-controller="Series" asp-action="Index" class="wl-btn-outline">Dizileri Keşfet</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="wl-grid">
+            @foreach (var item in Model)
+            {
+                <div class="wl-card-wrapper" style="position:relative;">
+                    <a class="wl-card" asp-controller="@(item.ContentType == "Movie" ? "Movies" : "Series")" asp-action="Detail" asp-route-id="@item.ContentId">
+                        <div class="wl-card-poster">
+                            @if (!string.IsNullOrEmpty(item.PosterUrl))
+                            {
+                                <img src="@item.PosterUrl" alt="@item.Title" loading="lazy" />
+                            }
+                            else
+                            {
+                                <div class="wl-card-placeholder">
+                                    <i class="fas @(item.ContentType == "Movie" ? "fa-film" : "fa-tv")"></i>
+                                </div>
+                            }
+                            <div class="wl-card-overlay">
+                                <div class="wl-card-overlay-actions">
+                                    <span class="wl-card-icon-btn"><i class="fas fa-info"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wl-card-info">
+                            <div class="wl-card-title">@item.Title</div>
+                            <div class="wl-card-meta">
+                                @(item.ContentType == "Movie" ? "Film" : "Dizi") @(item.Year.HasValue ? $" · {item.Year}" : "")
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Remove Favorite Action -->
+                    <div style="position:absolute; top:10px; right:10px; z-index:10; background:rgba(0,0,0,.6); border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+                        <form asp-controller="Favorites" asp-action="Toggle" method="post" class="m-0">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="contentId" value="@item.ContentId" />
+                            <input type="hidden" name="contentType" value="@item.ContentType" />
+                            <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                            <button type="submit" class="btn btn-link text-danger p-0" style="font-size:.9rem; line-height:1; display:flex; align-items:center; justify-content:center;" title="Favorilerden Çıkar">
+                                <i class="fas fa-heart text-primary"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

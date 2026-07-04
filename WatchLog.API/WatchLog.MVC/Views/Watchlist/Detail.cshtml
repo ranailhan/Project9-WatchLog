@@ -1,0 +1,175 @@
+@using WatchLog.MVC.Models.ViewModels
+@using Microsoft.AspNetCore.Identity
+@model WatchlistDetailViewModel
+@inject UserManager<ApplicationUser> UserManager
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = Model.Name;
+    var currentUserId = UserManager.GetUserId(User);
+    var isOwner = Model.UserId == currentUserId;
+}
+
+<div class="wl-page-header">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <h1 class="wl-page-title"><i class="fas fa-list text-primary me-2"></i>@Model.Name</h1>
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <p class="wl-page-subtitle mb-2">@Model.Description</p>
+                }
+                <div class="d-flex align-items-center gap-3">
+                    <span class="text-muted" style="font-size:.8rem;">
+                        <i class="fas fa-calendar-alt me-1"></i>Oluşturulma: @Model.CreatedAt.ToString("dd MMM yyyy")
+                    </span>
+                    <span class="text-muted" style="font-size:.8rem;">
+                        <i class="fas fa-film me-1"></i>@Model.Items.Count içerik
+                    </span>
+                    @if (Model.IsPublic)
+                    {
+                        <span style="font-size:.72rem;background:rgba(34,197,94,.15);color:#22c55e;padding:2px 8px;border-radius:4px;">
+                            <i class="fas fa-globe me-1"></i>Herkese Açık
+                        </span>
+                    }
+                    else
+                    {
+                        <span style="font-size:.72rem;background:rgba(255,255,255,.05);color:var(--text-muted);padding:2px 8px;border-radius:4px;">
+                            <i class="fas fa-lock me-1"></i>Özel
+                        </span>
+                    }
+                </div>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                @if (Model.IsPublic)
+                {
+                    <button type="button" class="wl-btn-outline" style="border-color:var(--accent);color:var(--accent);" data-bs-toggle="modal" data-bs-target="#qrModal">
+                        <i class="fas fa-qrcode me-1"></i>QR Kod ile Paylaş
+                    </button>
+                }
+                <a asp-controller="Watchlist" asp-action="Index" class="wl-btn-outline">
+                    <i class="fas fa-chevron-left me-1"></i>Listelerime Dön
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-4">
+    @if (!Model.Items.Any())
+    {
+        <div class="wl-empty">
+            <i class="fas fa-film"></i>
+            <h3>Listen henüz boş</h3>
+            <p>Film veya dizi detay sayfalarından bu listeye içerik ekleyebilirsiniz.</p>
+            <div class="d-flex gap-2 justify-content-center mt-3">
+                <a asp-controller="Movies" asp-action="Index" class="wl-btn-primary">Filmleri Keşfet</a>
+                <a asp-controller="Series" asp-action="Index" class="wl-btn-outline">Dizileri Keşfet</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="wl-grid">
+            @foreach (var item in Model.Items)
+            {
+                <div class="wl-card-wrapper" style="position:relative;">
+                    @{
+                        var itemCtrl = item.ContentType == "Movie" ? "Movies" : "Series";
+                    }
+                    <a class="wl-card" asp-controller="@itemCtrl" asp-action="Detail" asp-route-id="@item.ContentId">
+                        <div class="wl-card-poster">
+                            @if (!string.IsNullOrEmpty(item.PosterUrl))
+                            {
+                                <img src="@item.PosterUrl" alt="@item.Title" loading="lazy" />
+                            }
+                            else
+                            {
+                                <div class="wl-card-placeholder">
+                                    <i class="fas @(item.ContentType == "Movie" ? "fa-film" : "fa-tv")"></i>
+                                </div>
+                            }
+                            <div class="wl-card-overlay">
+                                <div class="wl-card-overlay-actions">
+                                    <span class="wl-card-icon-btn"><i class="fas fa-info"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wl-card-info">
+                            <div class="wl-card-title">@item.Title</div>
+                            <div class="wl-card-meta">
+                                @(item.ContentType == "Movie" ? "Film" : "Dizi") @(item.Year.HasValue ? $" · {item.Year}" : "")
+                            </div>
+                        </div>
+                    </a>
+
+                    @if (isOwner)
+                    {
+                        <!-- Remove Item Form -->
+                        <div style="position:absolute; top:10px; right:10px; z-index:10; background:rgba(0,0,0,.6); border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+                            <form asp-controller="Watchlist" asp-action="RemoveItem" method="post" class="m-0">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <input type="hidden" name="watchlistId" value="@Model.Id" />
+                                <button type="submit" class="btn btn-link text-danger p-0" style="font-size:.9rem; line-height:1; display:flex; align-items:center; justify-content:center;"
+                                        onclick="return confirm('@item.Title içeriğini listeden çıkarmak istiyor musun?')" title="Listeden Çıkar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<!-- QR Share Modal -->
+<div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:380px;">
+        <div class="modal-content border-0" style="background:#1a1d24; border-radius:16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title" id="qrModalLabel" style="color:#ffffff; font-weight:600;">QR Kod ile Paylaş</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <p class="text-muted small mb-3">Bu listeyi arkadaşlarınızla paylaşmak için aşağıdaki QR kodu taratın.</p>
+                <div class="d-flex justify-content-center p-3 mb-3" style="background:#ffffff; border-radius:12px; display:inline-block; margin:0 auto; width: fit-content;">
+                    <img src="@Url.Action("GetQrCode", "Watchlist", new { id = Model.Id })" alt="QR Code" style="width: 200px; height: 200px;" />
+                </div>
+                <div class="input-group input-group-sm mb-2" style="background:#111317; border:1px solid #2d323f; border-radius:8px; overflow:hidden; padding: 2px;">
+                    <input type="text" id="shareUrlInput" class="form-control border-0 bg-transparent" readonly value="" style="color:#ffffff; font-size: .8rem; box-shadow:none;" />
+                    <button class="btn btn-outline-secondary border-0" type="button" id="copyShareUrlBtn" title="Linki Kopyala" style="color:#ffffff; background:transparent;">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <div id="copyAlert" class="text-success small d-none"><i class="fas fa-check me-1"></i>Link kopyalandı!</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var currentUrl = "@Html.Raw(ViewBag.ShareUrl)";
+            document.getElementById("shareUrlInput").value = currentUrl;
+
+            // Copy button logic
+            var copyBtn = document.getElementById("copyShareUrlBtn");
+            if (copyBtn) {
+                copyBtn.addEventListener("click", function() {
+                    var inputEl = document.getElementById("shareUrlInput");
+                    inputEl.select();
+                    inputEl.setSelectionRange(0, 99999);
+                    navigator.clipboard.writeText(inputEl.value).then(function() {
+                        var alertEl = document.getElementById("copyAlert");
+                        alertEl.classList.remove("d-none");
+                        setTimeout(function() {
+                            alertEl.classList.add("d-none");
+                        }, 2000);
+                    });
+                });
+            }
+        });
+    </script>
+}

@@ -1,0 +1,118 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Arama: " + ViewBag.Query;
+    var results = (ViewBag.Results as List<WatchLog.MVC.Models.ApiModels.SearchResultModel>) ?? new();
+    var movies = results.Where(r => r.ContentType == "Movie").ToList();
+    var series = results.Where(r => r.ContentType == "Series").ToList();
+    var actors = results.Where(r => r.ContentType == "Actor").ToList();
+}
+
+<div class="wl-page-header">
+    <div class="container">
+        <p class="text-muted mb-1" style="font-size:.85rem;">Arama Sonuçları</p>
+        <h1 class="wl-page-title">"@ViewBag.Query"</h1>
+        <p class="wl-page-subtitle">@results.Count sonuç bulundu</p>
+    </div>
+</div>
+
+<div class="container py-4">
+    @if (!results.Any())
+    {
+        <div class="wl-empty">
+            <i class="fas fa-search"></i>
+            <h3>Sonuç bulunamadı</h3>
+            <p>Farklı anahtar kelimeler deneyin.</p>
+        </div>
+    }
+    else
+    {
+        @if (movies.Any())
+        {
+            <h3 class="mb-3" style="font-size:1.1rem;color:var(--cream);">
+                <i class="fas fa-film text-primary me-2"></i>Filmler (@movies.Count)
+            </h3>
+            @foreach (var r in movies)
+            {
+                <a class="wl-search-result" asp-controller="Movies" asp-action="Detail" asp-route-id="@r.Id">
+                    @if (!string.IsNullOrEmpty(r.PosterUrl))
+                    {
+                        <img src="@r.PosterUrl" alt="@r.Name" />
+                    }
+                    else
+                    {
+                        <div style="width:50px;height:70px;background:var(--surface2);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--border);flex-shrink:0;">
+                            <i class="fas fa-film"></i>
+                        </div>
+                    }
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="wl-search-type movie">Film</span>
+                            @if (r.Year.HasValue) { <span class="text-muted" style="font-size:.8rem;">@r.Year</span> }
+                        </div>
+                        <div style="font-weight:600;color:var(--cream);">@r.Name</div>
+                    </div>
+                    <i class="fas fa-chevron-right text-muted ms-auto"></i>
+                </a>
+            }
+        }
+
+        @if (series.Any())
+        {
+            <h3 class="mt-4 mb-3" style="font-size:1.1rem;color:var(--cream);">
+                <i class="fas fa-tv text-accent me-2"></i>Diziler (@series.Count)
+            </h3>
+            @foreach (var r in series)
+            {
+                <a class="wl-search-result" asp-controller="Series" asp-action="Detail" asp-route-id="@r.Id">
+                    @if (!string.IsNullOrEmpty(r.PosterUrl))
+                    {
+                        <img src="@r.PosterUrl" alt="@r.Name" />
+                    }
+                    else
+                    {
+                        <div style="width:50px;height:70px;background:var(--surface2);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--border);flex-shrink:0;">
+                            <i class="fas fa-tv"></i>
+                        </div>
+                    }
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="wl-search-type series">Dizi</span>
+                            @if (r.Year.HasValue) { <span class="text-muted" style="font-size:.8rem;">@r.Year</span> }
+                        </div>
+                        <div style="font-weight:600;color:var(--cream);">@r.Name</div>
+                    </div>
+                    <i class="fas fa-chevron-right text-muted ms-auto"></i>
+                </a>
+            }
+        }
+
+        @if (actors.Any())
+        {
+            <h3 class="mt-4 mb-3" style="font-size:1.1rem;color:var(--cream);">
+                <i class="fas fa-user-friends me-2" style="color:var(--text-muted)"></i>Oyuncular (@actors.Count)
+            </h3>
+            <div class="row g-3">
+                @foreach (var r in actors)
+                {
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="wl-actor-card">
+                            @if (!string.IsNullOrEmpty(r.PosterUrl))
+                            {
+                                <img src="@r.PosterUrl" alt="@r.Name" />
+                            }
+                            else
+                            {
+                                <div style="height:200px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:3rem;color:var(--border);">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            }
+                            <div class="wl-actor-info">
+                                <div class="wl-actor-name">@r.Name</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>

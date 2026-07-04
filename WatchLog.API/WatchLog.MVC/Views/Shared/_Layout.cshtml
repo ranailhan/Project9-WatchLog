@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="WatchLog - Film ve Dizi Takip Platformu. İzleme listeleri oluştur, puan ver, yorum yap." />
+    <title>@ViewData["Title"] — WatchLog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="wl-navbar" id="mainNav">
+    <div class="container-fluid px-4">
+        <div class="d-flex align-items-center justify-content-between">
+            <!-- Logo -->
+            <a class="wl-logo" asp-controller="Home" asp-action="Index">
+                WATCH<span>LOG</span>
+            </a>
+
+            <!-- Nav Links -->
+            <ul class="wl-nav-links d-none d-lg-flex">
+                <li><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+                <li><a asp-controller="Movies" asp-action="Index">Filmler</a></li>
+                <li><a asp-controller="Series" asp-action="Index">Diziler</a></li>
+                @if (User.IsInRole("Admin"))
+                {
+                    <li><a asp-area="" asp-controller="Dashboard" asp-action="Index">Admin Panel</a></li>
+                }
+            </ul>
+
+            <!-- Search + Actions -->
+            <div class="d-flex align-items-center gap-3">
+                <form asp-controller="Home" asp-action="Search" method="get" class="wl-search-form">
+                    <i class="fas fa-search"></i>
+                    <input type="search" name="q" placeholder="Film, dizi, oyuncu ara..."
+                           value="@ViewBag.Query" autocomplete="off" />
+                </form>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <div class="dropdown">
+                        <button class="wl-user-btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle"></i>
+                            <span class="d-none d-md-inline">@User.Identity.Name?.Split('@')[0]</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end wl-dropdown">
+                            <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile">
+                                <i class="fas fa-user me-2"></i>Profilim</a></li>
+                            <li><a class="dropdown-item" asp-controller="Watchlist" asp-action="Index">
+                                <i class="fas fa-list me-2"></i>Listelerim</a></li>
+                            <li><a class="dropdown-item" asp-controller="Favorites" asp-action="Index">
+                                <i class="fas fa-heart me-2"></i>Favorilerim</a></li>
+                            <li><a class="dropdown-item" asp-controller="Reports" asp-action="Index">
+                                <i class="fas fa-chart-bar me-2"></i>Raporlar</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li>
+                                <form asp-controller="Account" asp-action="Logout" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button class="dropdown-item text-danger" type="submit">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Çıkış Yap
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="wl-btn-outline">Giriş Yap</a>
+                    <a asp-controller="Account" asp-action="Register" class="wl-btn-primary">Kayıt Ol</a>
+                }
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Toast Bildirimler -->
+<div class="wl-toast-container" id="toastContainer">
+    @if (TempData["Success"] != null)
+    {
+        <div class="wl-toast wl-toast-success show">
+            <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="wl-toast wl-toast-error show">
+            <i class="fas fa-times-circle me-2"></i>@TempData["Error"]
+        </div>
+    }
+    @if (TempData["Info"] != null)
+    {
+        <div class="wl-toast wl-toast-info show">
+            <i class="fas fa-info-circle me-2"></i>@TempData["Info"]
+        </div>
+    }
+</div>
+
+<!-- Main Content -->
+<main class="wl-main">
+    @RenderBody()
+</main>
+
+<!-- Footer -->
+<footer class="wl-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="wl-logo mb-3">WATCH<span>LOG</span></div>
+                <p class="text-muted small">Film ve dizi keşfet, izleme listeleri oluştur, puan ver, yorum yap.</p>
+            </div>
+            <div class="col-md-2 mb-4 mb-md-0">
+                <h6 class="text-muted text-uppercase mb-3" style="font-size:.75rem;letter-spacing:.1em">Keşfet</h6>
+                <ul class="list-unstyled">
+                    <li><a asp-controller="Movies" asp-action="Index" class="footer-link">Filmler</a></li>
+                    <li><a asp-controller="Series" asp-action="Index" class="footer-link">Diziler</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2 mb-4 mb-md-0">
+                <h6 class="text-muted text-uppercase mb-3" style="font-size:.75rem;letter-spacing:.1em">Hesap</h6>
+                <ul class="list-unstyled">
+                    <li><a asp-controller="Account" asp-action="Login" class="footer-link">Giriş Yap</a></li>
+                    <li><a asp-controller="Account" asp-action="Register" class="footer-link">Kayıt Ol</a></li>
+                </ul>
+            </div>
+        </div>
+        <hr style="border-color:#2a2a2a;margin:2rem 0" />
+        <p class="text-center text-muted small mb-0">© @DateTime.Now.Year WatchLog. Tüm hakları saklıdır.</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script>
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+        document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 50);
+    });
+    // Auto-hide toasts
+    setTimeout(() => {
+        document.querySelectorAll('.wl-toast.show').forEach(t => t.classList.remove('show'));
+    }, 4000);
+</script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

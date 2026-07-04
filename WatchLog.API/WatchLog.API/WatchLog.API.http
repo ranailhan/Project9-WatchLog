@@ -1,0 +1,6 @@
+@WatchLog.API_HostAddress = http://localhost:5268
+
+GET {{WatchLog.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

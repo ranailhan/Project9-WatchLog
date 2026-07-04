@@ -1,0 +1,97 @@
+@using WatchLog.MVC.Models.ViewModels
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Kullanıcı Aktivite Raporu";
+    var reviewCount = (ViewBag.ReviewCount as int?) ?? 0;
+    var ratingCount = (ViewBag.RatingCount as int?) ?? 0;
+    var favoriteCount = (ViewBag.FavoriteCount as int?) ?? 0;
+    var topRated = (ViewBag.TopRated as List<TopRatedContentViewModel>) ?? new();
+}
+
+<div class="wl-page-header">
+    <div class="container">
+        <h1 class="wl-page-title"><i class="fas fa-users text-primary me-2"></i>Kullanıcı Aktivitesi</h1>
+        <p class="wl-page-subtitle">Platform üzerindeki genel etkileşimler ve en yüksek puan alan içerikler</p>
+    </div>
+</div>
+
+<div class="container py-4">
+    <!-- İstatistik Kartları -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.5rem; text-align:center;">
+                <div style="width:48px; height:48px; background:rgba(217,34,67,.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; color:var(--primary); font-size:1.2rem;">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h4 class="text-muted mb-1" style="font-size:.85rem; text-uppercase; letter-spacing:.05em;">Toplam Yorum</h4>
+                <div style="font-size:2rem; font-weight:800; color:var(--cream);">@reviewCount</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.5rem; text-align:center;">
+                <div style="width:48px; height:48px; background:rgba(224,195,117,.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; color:var(--accent); font-size:1.2rem;">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h4 class="text-muted mb-1" style="font-size:.85rem; text-uppercase; letter-spacing:.05em;">Toplam Puanlama</h4>
+                <div style="font-size:2rem; font-weight:800; color:var(--cream);">@ratingCount</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.5rem; text-align:center;">
+                <div style="width:48px; height:48px; background:rgba(34,197,94,.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; color:#22c55e; font-size:1.2rem;">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h4 class="text-muted mb-1" style="font-size:.85rem; text-uppercase; letter-spacing:.05em;">Toplam Favori</h4>
+                <div style="font-size:2rem; font-weight:800; color:var(--cream);">@favoriteCount</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- En Çok Puan Alanlar Tablosu -->
+    <div class="admin-table-card" style="max-width: 900px; margin: 0 auto;">
+        <div class="admin-table-header">
+            <h3 class="admin-table-title"><i class="fas fa-award me-2 text-primary"></i>En Beğenilen 5 İçerik</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Sıra</th>
+                        <th>İçerik</th>
+                        <th>Tür</th>
+                        <th>Ortalama Puan</th>
+                        <th>Puan Sayısı</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int index = 1; }
+                    @foreach (var item in topRated)
+                    {
+                        <tr>
+                            <td><strong>#@index</strong></td>
+                            <td>
+                                <a asp-controller="@(item.ContentType == "Movie" ? "Movies" : "Series")" asp-action="Detail" asp-route-id="@item.ContentId" style="color:var(--cream);font-weight:600;text-decoration:none;">
+                                    @item.Title
+                                </a>
+                            </td>
+                            <td>
+                                @(item.ContentType == "Movie" ? "Film" : "Dizi")
+                            </td>
+                            <td>
+                                <span style="color:var(--accent); font-weight:700;">★ @item.AverageScore / 10</span>
+                            </td>
+                            <td>@item.RatingCount oy</td>
+                        </tr>
+                        index++;
+                    }
+                    @if (!topRated.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">Henüz puanlanmış içerik bulunmuyor.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

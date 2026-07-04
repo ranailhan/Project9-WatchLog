@@ -1,0 +1,57 @@
+@using WatchLog.MVC.Models.ViewModels
+@model LoginViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<div class="wl-auth-page">
+    <div class="wl-form-card" style="max-width:440px;width:100%;">
+        <div class="text-center mb-4">
+            <div class="wl-logo" style="font-size:2rem;margin-bottom:8px;">WATCH<span>LOG</span></div>
+            <h2 style="font-size:1.4rem;font-weight:700;color:var(--cream);">Tekrar Hoşgeldin!</h2>
+            <p class="text-muted" style="font-size:.9rem;">Hesabına giriş yap</p>
+        </div>
+
+        <form asp-controller="Account" asp-action="Login" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div asp-validation-summary="All" class="alert text-danger" style="background:rgba(217,34,67,.1);border:1px solid rgba(217,34,67,.3);border-radius:8px;padding:10px 14px;font-size:.85rem;"></div>
+            }
+
+            <div class="wl-form-group">
+                <label class="wl-form-label">E-posta</label>
+                <input asp-for="Email" type="email" class="wl-form-control" placeholder="ornek@email.com" />
+            </div>
+
+            <div class="wl-form-group">
+                <label class="wl-form-label">Şifre</label>
+                <input asp-for="Password" type="password" class="wl-form-control" placeholder="••••••••" />
+            </div>
+
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <label style="display:flex;align-items:center;gap:8px;font-size:.88rem;color:var(--text-muted);cursor:pointer;">
+                    <input asp-for="RememberMe" type="checkbox"
+                           style="accent-color:var(--primary);width:16px;height:16px;" />
+                    Beni hatırla
+                </label>
+            </div>
+
+            <button type="submit" class="wl-btn-primary w-100" style="padding:12px;font-size:1rem;justify-content:center;">
+                <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+            </button>
+        </form>
+
+        <p class="text-center text-muted mt-4" style="font-size:.9rem;">
+            Hesabın yok mu?
+            <a asp-controller="Account" asp-action="Register" style="color:var(--primary);font-weight:600;">
+                Kayıt Ol
+            </a>
+        </p>
+
+    </div>
+</div>
+
